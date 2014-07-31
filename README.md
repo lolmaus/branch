@@ -39,16 +39,18 @@ puts "All threads complete."
 
 
 
-Thread synchronization
-----------------------
+Thread synchronization with multiple mutexes
+--------------------------------------------
 
 ### Vanilla Ruby
 
-```rb
-shared_var = true
-
+```
 threads = []
-mutex = Mutex.new
+
+# Mutexes have all be instantiated manually
+mutex_array_access         = Mutex.new
+mutex_database_transaction = Mutex.new
+mutex_coffee_brewing       = Mutex.new
 
 10.times do
   threads << Thread.new do
@@ -56,11 +58,9 @@ mutex = Mutex.new
     # Imitating a time-consuming operation
     sleep rand(1..5)
     
-    # After the operation is complete, writing the result synchronously
-    mutex.synchronize do
-      # Assuming this would cause a race condition without a mutex
-      puts "test" if shared_var
-    end
+    mutex_array_access.synchronize         { shared_array << 'foo' if shared_array.length < 5 }
+    mutex_database_transaction.synchronize { DB::send('foo', 888) { |foo| foo.bar }}
+    mutex_coffee_brewing.synchronize       { coffee_machine.clean.fill('water').make_coffee }
     
   end
 end
@@ -68,30 +68,25 @@ end
 threads.each { |t| t.join }
 ```
 
-Scaffolding items required: **4** (`threads = []`, `mutex = Mutex.new`, `threads << Thread.new do`, `threads.each { |t| t.join }`).
-
 
 ### Ruby + branch
 
 ```ruby
-shared_var = true
-
 Branch.new do
   10.times do
-    branch do |mutex|
+    branch do |mutexes|
       
       # Imitating a time-consuming operation
       sleep rand(1..5)
-      
-      # After the operation is complete, writing the result synchronously
-      mutex.synchronize do
-        # Assuming this would cause a race condition without a mutex
-        puts "test" if shared_var
-      end
+    
+      # Mutexes are instantiated the moment they're first used
+      # and will persist throughuout the `Branch.new{ }` wrapper.
+      # Just keep the keys consistend between threads.
+      mutexes[:array_access].synchronize         { shared_array << 'foo' if shared_array.length < 5 }
+      mutexes[:database_transaction].synchronize { DB::send('foo', 888) { |foo| foo.bar }}
+      mutexes[:coffee_brewing].synchronize       { coffee_machine.clean.fill('water').make_coffee }
       
     end
   end
 end
 ```
-
-Scaffolding items required: **2** (`Branch.new do`, `branch do |mutex|`).
