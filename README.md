@@ -1,16 +1,42 @@
-branch
+Branch
 ======
 
-Run blocks asynchronously with little effort, a Ruby equivalent for JS setTimeout.
+**Run blocks asynchronously with little effort. A Ruby equivalent for JS `setTimeout`.**
 
-This tiny lib was written to help save some typing when doing threads with Ruby.
+This tiny lib was written to slightly reduce the amount of scaffolding required to do threads in Ruby. It is aimed at simpler use cases, for more complicated scenarios using vanilla thread syntax is recommended.
+
+This lib is not an escape from learning how threads work.
+
+
+How it works
+------------
+
+1. First of all, wrap your code with the `Branch.new { ... }` wrapper.
+2. Within that wrapper, the `branch { ... }` method is available. It starts the passed block in a new asynchronous thread.
+3. To start a thread with a delay, use `branch(2) { ... }`. This example will be executed after two seconds, without blocking the main thread.
+4. The end of the `Branch.new { ... }` wrapper will wait for all the threads to finish. In other words, the end of wrapper synchonizes your code. If you start another `Branch.new { ... }` afterwards, it will start sequentially after the previous branch is complete.
+5. If you need to synchronize a certain operation, you can use a mutex like this:
+  
+  ```rb
+  branch do |mutexes|
+    mutexes[:meaningful_mutex_name].synchronize { ... }
+  end
+  ```
+
+6. You don't need to instantiate mutexes manually. To reuse a mutex in another thread, simply access the `mutexes` hash with the same key. You can use anything for keys, e. g. integers, but a meaningful symbol is recommended.
+7. You can use as many mutexes as you need.
 
 
 
-Simple example
---------------
+Example usage
+-------------
 
-### Vanilla Ruby
+Please look into these pieces of code to see how Branch usage compares to vanilla syntax
+
+
+### Simple example
+
+#### Vanilla threads
 
 Requires a fair amount of scaffolding:
 
@@ -30,7 +56,7 @@ puts "All threads complete."
 ```
 
 
-### Ruby + branch equivalent
+#### Branch equivalent
 
 All the scaffolding you need is you need is a `Branch.new { }` wrapper.
 
@@ -48,12 +74,11 @@ puts "All threads complete."
 
 
 
-Thread synchronization with multiple mutexes
---------------------------------------------
+### Thread synchronization with multiple mutexes
 
-Mutexes have all be instantiated manually.
+All mutexes have to be instantiated manually.
 
-### Vanilla Ruby
+#### Vanilla threads
 
 ```rb
 threads = []
@@ -79,9 +104,9 @@ threads.each { |t| t.join }
 ```
 
 
-### Ruby + branch equivalent
+#### Branch equivalent
 
-Mutexes are instantiated the moment they're first used and will persist throughuout the `Branch.new{ }` wrapper.
+Mutexes are instantiated automatically when they're first used and will persist throughuout the `Branch.new{ }` wrapper.
 
 ```ruby
 Branch.new do
