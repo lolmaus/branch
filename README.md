@@ -12,6 +12,10 @@ Simple example
 
 ### Vanilla Ruby
 
+* A thread array is to be defined manually.
+* Each thread should be added to that array.
+* Threads should be joined so that the main script doesn't exit before all threads finish.
+
 ```rb
 threads = []
 puts "Starting threads"
@@ -25,6 +29,8 @@ puts "All threads complete."
 
 
 ### Ruby + branch
+
+* You only need to wrap the code in `Branch.new { }`.
 
 ```ruby
 Branch.new do
@@ -42,12 +48,13 @@ puts "All threads complete."
 Thread synchronization with multiple mutexes
 --------------------------------------------
 
+Mutexes have all be instantiated manually.
+
 ### Vanilla Ruby
 
 ```rb
 threads = []
 
-# Mutexes have all be instantiated manually
 mutex_array_access         = Mutex.new
 mutex_database_transaction = Mutex.new
 mutex_coffee_brewing       = Mutex.new
@@ -71,6 +78,8 @@ threads.each { |t| t.join }
 
 ### Ruby + branch
 
+Mutexes are instantiated the moment they're first used and will persist throughuout the `Branch.new{ }` wrapper.
+
 ```ruby
 Branch.new do
   10.times do
@@ -79,9 +88,6 @@ Branch.new do
       # Imitating a time-consuming operation
       sleep rand(1..5)
     
-      # Mutexes are instantiated the moment they're first used
-      # and will persist throughuout the `Branch.new{ }` wrapper.
-      # Just keep the keys consistend between threads.
       mutexes[:array_access].synchronize         { shared_array << 'foo' if shared_array.length < 5 }
       mutexes[:database_transaction].synchronize { DB::send('foo', 888) { |foo| foo.bar }}
       mutexes[:coffee_brewing].synchronize       { coffee_machine.clean.fill('water').make_coffee }
