@@ -12,6 +12,8 @@ Simple example
 
 ### Vanilla Ruby
 
+Requires a fair amount of scaffolding:
+
 * A thread array is to be defined manually.
 * Each thread should be added to that array.
 * Threads should be joined so that the main script doesn't exit before all threads finish.
@@ -28,9 +30,9 @@ puts "All threads complete."
 ```
 
 
-### Ruby + branch
+### Ruby + branch equivalent
 
-* You only need to wrap the code in `Branch.new { }`.
+All the scaffolding you need is you need is a `Branch.new { }` wrapper.
 
 ```ruby
 Branch.new do
@@ -42,6 +44,7 @@ Branch.new do
 end
 puts "All threads complete."
 ```
+
 
 
 
@@ -65,10 +68,10 @@ mutex_coffee_brewing       = Mutex.new
     # Imitating a time-consuming operation
     sleep rand(1..5)
     
-    mutex_array_access.synchronize         { shared_array << 'foo' if shared_array.length < 5 }
+    mutex_array_access        .synchronize { shared_array << 'foo' if shared_array.length < 5 }
     mutex_database_transaction.synchronize { DB::send('foo', 888) { |foo| foo.bar }}
-    mutex_coffee_brewing.synchronize       { coffee_machine.clean.fill('water').make_coffee }
-    
+    mutex_coffee_brewing      .synchronize { coffee_machine.clean.fill('water').make_coffee }
+     
   end
 end
 
@@ -76,7 +79,7 @@ threads.each { |t| t.join }
 ```
 
 
-### Ruby + branch
+### Ruby + branch equivalent
 
 Mutexes are instantiated the moment they're first used and will persist throughuout the `Branch.new{ }` wrapper.
 
@@ -88,9 +91,9 @@ Branch.new do
       # Imitating a time-consuming operation
       sleep rand(1..5)
     
-      mutexes[:array_access].synchronize         { shared_array << 'foo' if shared_array.length < 5 }
+      mutexes[:array_access]        .synchronize { shared_array << 'foo' if shared_array.length < 5 }
       mutexes[:database_transaction].synchronize { DB::send('foo', 888) { |foo| foo.bar }}
-      mutexes[:coffee_brewing].synchronize       { coffee_machine.clean.fill('water').make_coffee }
+      mutexes[:coffee_brewing]      .synchronize { coffee_machine.clean.fill('water').make_coffee }
       
     end
   end
