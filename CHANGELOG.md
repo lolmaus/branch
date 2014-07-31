@@ -4,4 +4,4 @@
 
 **February 11, 2014**
 
-* **New** Initial version
+* `new` Initial version
