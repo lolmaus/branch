@@ -5,7 +5,7 @@ Branch
 
 This tiny lib was written to slightly reduce the amount of scaffolding required to do threads in Ruby. It is aimed at simpler use cases, for more complicated scenarios using vanilla thread syntax is recommended.
 
-This lib is not an escape from learning how threads work.
+I hope this lib can save some frustration for people who discover that implementing a straightforward `setTimeout(function() { ... }, 0)` with Ruby is much more complicated and less intuitive. On the other hand, it is not an escape from getting to know how threads work.
 
 
 How it works
@@ -13,9 +13,9 @@ How it works
 
 1. First of all, wrap your code with the `Branch.new { ... }` wrapper.
 2. Within that wrapper, the `branch { ... }` method is available. It starts the passed block in a new asynchronous thread.
-3. To start a thread with a delay, use `branch(2) { ... }`. This example will be executed after two seconds, without blocking the main thread.
-4. The end of the `Branch.new { ... }` wrapper will wait for all the threads to finish. In other words, the end of wrapper synchonizes your code. If you start another `Branch.new { ... }` afterwards, it will start sequentially after the previous branch is complete.
-5. If you need to synchronize a certain operation, you can use a mutex like this:
+3. The end of the `Branch.new { ... }` wrapper will wait for all the threads to finish. In other words, the end of wrapper synchonizes your code. If you start another `Branch.new { ... }` afterwards, it will start sequentially after the previous branch is complete.
+4. To start a thread with a delay, use `branch(2) { ... }`. This example will be executed after two seconds, without blocking the main thread.
+5. If you need to synchronize a certain operation in order to prevent a race condition (JS coders beware!), you can use a mutex like this:
   
   ```rb
   branch do |mutexes|
@@ -24,7 +24,7 @@ How it works
   ```
 
 6. You don't need to instantiate mutexes manually. To reuse a mutex in another thread, simply access the `mutexes` hash with the same key. You can use anything for keys, e. g. integers, but a meaningful symbol is recommended.
-7. You can use as many mutexes as you need.
+7. Within a `branch`, you can use as many mutexes as you need.
 
 
 
