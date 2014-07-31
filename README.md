@@ -44,7 +44,7 @@ Thread synchronization with multiple mutexes
 
 ### Vanilla Ruby
 
-```
+```rb
 threads = []
 
 # Mutexes have all be instantiated manually
