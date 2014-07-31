@@ -15,9 +15,9 @@ Simple example
 ```rb
 threads = []
 puts "Starting threads"
-threads << Thread.new { sleep 5; puts "Thread 1 finished. }
-threads << Thread.new { sleep 2; puts "Thread 2 finished. }
-threads << Thread.new { sleep 1; puts "Thread 3 finished. }
+threads << Thread.new { sleep 5; puts "Thread 1 finished." }
+threads << Thread.new { sleep 2; puts "Thread 2 finished." }
+threads << Thread.new { sleep 1; puts "Thread 3 finished." }
 puts "All threads started."
 threads.each { |t| t.join }
 puts "All threads complete."
@@ -29,9 +29,9 @@ puts "All threads complete."
 ```ruby
 Branch.new do
   puts "Starting threads"
-  branch { sleep 5; puts "Thread 1 finished. }
-  branch { sleep 2; puts "Thread 2 finished. }
-  branch { sleep 1; puts "Thread 3 finished. }
+  branch { sleep 5; puts "Thread 1 finished." }
+  branch { sleep 2; puts "Thread 2 finished." }
+  branch { sleep 1; puts "Thread 3 finished." }
   puts "All threads started."
 end
 puts "All threads complete."
@@ -68,6 +68,8 @@ end
 threads.each { |t| t.join }
 ```
 
+Scaffolding items required: **4** (`threads = []`, `mutex = Mutex.new`, `threads << Thread.new do`, `threads.each { |t| t.join }`).
+
 
 ### Ruby + branch
 
@@ -91,3 +93,5 @@ Branch.new do
   end
 end
 ```
+
+Scaffolding items required: **2** (`Branch.new do`, `branch do |mutex|`).
