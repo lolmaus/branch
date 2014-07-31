@@ -5,7 +5,7 @@ Branch
 
 This tiny lib was written to slightly reduce the amount of scaffolding required to do threads in Ruby. It is aimed at simpler use cases, for more complicated scenarios using vanilla thread syntax is recommended.
 
-I hope this lib can save some frustration for people who discover that implementing a straightforward `setTimeout(function() { ... }, 0)` with Ruby is much more complicated and less intuitive. On the other hand, it is not an escape from getting to know how threads work.
+I hope Branch can save some frustration for people who discover that implementing a straightforward JS `setTimeout(function() { ... }, 0)` with Ruby is much more complicated and less intuitive. On the other hand, Branch is not an escape from getting to know how threads work.
 
 
 How it works
