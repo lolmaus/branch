@@ -68,7 +68,7 @@ end
 threads.each { |t| t.join }
 ```
 
-
+<div>
 ### Ruby + branch
 
 ```ruby
@@ -91,3 +91,4 @@ Branch.new do
   end
 end
 ```
+</div>
