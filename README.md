@@ -18,7 +18,7 @@ How it works
 5. If you need to synchronize a certain operation in order to prevent a race condition (JS coders beware!), you can use a mutex like this:
   
   ```rb
-  branch do |mutexes|
+  b.branch do |mutexes|
     mutexes[:meaningful_mutex_name].synchronize { ... }
   end
   ```
@@ -61,11 +61,11 @@ puts "All threads complete."
 All the scaffolding you need is you need is a `Branch.new { }` wrapper.
 
 ```ruby
-Branch.new do
+Branch.new do |b|
   puts "Starting threads"
-  branch { sleep 5; puts "Thread 1 finished." }
-  branch { sleep 2; puts "Thread 2 finished." }
-  branch { sleep 1; puts "Thread 3 finished." }
+  b.branch { sleep 5; puts "Thread 1 finished." }
+  b.branch { sleep 2; puts "Thread 2 finished." }
+  b.branch { sleep 1; puts "Thread 3 finished." }
   puts "All threads started."
 end
 puts "All threads complete."
@@ -109,9 +109,9 @@ threads.each { |t| t.join }
 Mutexes are instantiated automatically when they're first used and will persist throughuout the `Branch.new{ }` wrapper.
 
 ```ruby
-Branch.new do
+Branch.new do |b|
   10.times do
-    branch do |mutexes|
+    b.branch do |mutexes|
       
       # Imitating a time-consuming operation
       sleep rand(1..5)

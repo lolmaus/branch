@@ -9,7 +9,8 @@ class Branch
     
     # Executing the passed block within the context
     # of this class' instance.
-    instance_eval &block if block_given?
+#     instance_eval &block if block_given?
+    yield self
     
     # Waiting for all threads to finish
     @threads.each { |thr| thr.join }
